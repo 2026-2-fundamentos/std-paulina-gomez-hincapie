@@ -9,26 +9,16 @@ OUTPUT_FILE = ACTIVITY_DIR / "submission" / "ventas.csv"
 
 def main():
     df = pd.read_csv(OUTPUT_FILE)
-    series = df["supplier"]
+    series = df["purchase_date"]
+
+    # series = series.replace(r"\d", "d", regex=True)
+
+    # series = series[series.str.match(r"\d{2}/\d{2}/\d{4}")]
+
     series = series.drop_duplicates()
     series = series.sort_values(ascending=True)
-
-    # d = {}
-    # for value in series:
-    #     key = value.lower()
-    #     key = key.replace("  ", " ")
-    #     key = key.replace("   ", " ")
-    #     if key in d:
-    #         d[key].append(value)
-    #         d[key] = list(set(d[key]))
-    #     else:
-    #         d[key] = [value]
-
-    # for key, values in d.items():
-    #     if len(values) > 1:
-    #         print(f"{key}")
-    #         for v in values:
-    #             print(f"    {v}")
+    series = series.to_list()
+    series = sorted(series, key=lambda x: len(x))
 
     for value in series:
         print(repr(value))
