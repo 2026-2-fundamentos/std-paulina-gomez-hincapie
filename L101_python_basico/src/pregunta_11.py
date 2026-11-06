@@ -1,13 +1,32 @@
+
+import gzip
+import os.path
+import csv
+
 def pregunta_11():
-    """
-    La cuarta columna (`codes`) contiene letras minúsculas separadas por
-    comas. Para cada una de esas letras, sume los valores de la segunda
-    columna (`value`) de los registros en los que aparece. Retorne un
-    diccionario `{letra: suma}` con las letras en orden alfabético.
 
-    Ejemplo del formato de la respuesta:
+    carpeta = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ruta = os.path.join(carpeta, "data", "data.csv.gz")
 
-        {"a": 122, "b": 49, "c": 91, ...}
-    """
+    sumas = {}
 
-    raise NotImplementedError
+    with gzip.open(ruta, "rt", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo, delimiter="\t")
+       
+        for columnas in lector:
+            valor = int(columnas[1])
+            codigos = columnas[3].split(",")
+
+            for letra in codigos:
+                if letra in sumas:
+                    sumas[letra] = sumas[letra] + valor
+                else:
+                    sumas[letra] = valor
+
+    resultado = {}
+
+    for letra in sorted(sumas):
+        resultado[letra] = sumas[letra]
+
+    return resultado
+

@@ -1,16 +1,40 @@
+
+import gzip
+import os.path
+import csv
+
 def pregunta_06():
-    """
-    La quinta columna (`metrics`) contiene pares `clave:valor` separados por
-    comas. Para cada clave, encuentre el valor mínimo y el valor máximo que
-    aparecen en todo el archivo. Retorne una lista de tuplas
-    `(clave, mínimo, máximo)` ordenada alfabéticamente por la clave.
 
-    Observe que el orden es mínimo y luego máximo, al contrario de la
-    pregunta 5.
+    carpeta = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ruta = os.path.join(carpeta, "data", "data.csv.gz")
 
-    Ejemplo del formato de la respuesta:
+    valores = {}
 
-        [("aaa", 1, 9), ("bbb", 1, 9), ...]
-    """
+    with gzip.open(ruta, "rt", encoding="utf-8") as archivo:
+        
 
-    raise NotImplementedError
+        lector = csv.reader(archivo, delimiter="\t")
+
+        for columnas in lector:
+            metricas = columnas[4].split(",")
+
+            for metrica in metricas:
+                datos = metrica.split(":")
+                clave = datos[0]
+                valor = int(datos[1])
+
+                if clave in valores:
+                    if valor < valores[clave][0]:
+                        valores[clave][0] = valor
+
+                    if valor > valores[clave][1]:
+                        valores[clave][1] = valor
+                else:
+                    valores[clave] = [valor, valor]
+
+    resultado = []
+
+    for clave in sorted(valores):
+        resultado.append((clave, valores[clave][0], valores[clave][1]))
+
+    return resultado

@@ -1,12 +1,35 @@
+
+import gzip
+import os.path
+import csv
+
 def pregunta_09():
-    """
-    Cuente cuántas veces aparece cada clave en la quinta columna (`metrics`)
-    de todo el archivo. Retorne un diccionario `{clave: cantidad}` con las
-    claves en orden alfabético.
 
-    Ejemplo del formato de la respuesta:
+    carpeta = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ruta = os.path.join(carpeta, "data", "data.csv.gz")
 
-        {"aaa": 13, "bbb": 16, "ccc": 23, ...}
-    """
+    conteo = {}
 
-    raise NotImplementedError
+    with gzip.open(ruta, "rt", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo, delimiter="\t")
+  
+
+        for columnas in lector:
+            metricas = columnas[4].split(",")
+
+            for metrica in metricas:
+                datos = metrica.split(":")
+                clave = datos[0]
+
+                if clave in conteo:
+                    conteo[clave] = conteo[clave] + 1
+                else:
+                    conteo[clave] = 1
+
+    resultado = {}
+
+    for clave in sorted(conteo):
+        resultado[clave] = conteo[clave]
+
+    return resultado
+
